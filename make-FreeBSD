@@ -8,7 +8,7 @@ git add make-FreeBSD CMakeLists.txt
 #git add make-FreeBSD
 git commit -m "FreeBSD 12 : SEM lmdb wallet miniupnpc patch, cmake list from Monero code"
 git pull origin master
-git push copy
+#git push copy
 
 
 git submodule init
