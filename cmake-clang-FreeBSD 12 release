@@ -1,0 +1,166 @@
+root@pc1:~/masari# ./make-FreeBSD
+Updating FreeBSD repository catalogue...
+FreeBSD repository is up to date.
+All repositories are up to date.
+Checking integrity... done (0 conflicting)
+The most recent version of packages are already installed
+On branch master
+Untracked files:
+    make-gcc
+
+nothing added to commit but untracked files present
+From https://github.com/masari-project/masari
+ * branch            master     -> FETCH_HEAD
+Already up to date.
+-- The C compiler identification is Clang 6.0.1
+-- The CXX compiler identification is Clang 6.0.1
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Building without build tag
+-- Could not find DEVELOPER_LOCAL_TOOLS in env (not required)
+-- BOOST_IGNORE_SYSTEM_PATHS defaults to OFF
+-- Could not find DEVELOPER_LIBUNBOUND_OLD in env (not required)
+-- Building for a 64-bit system
+-- Building internal libraries as static
+-- Could not find DATABASE in env (not required unless you want to change database type from default: lmdb)
+-- Using LMDB as default DB type
+-- looking for liblzma
+-- liblzma found
+-- Found Libunwind: /usr/local/include  
+-- Stack trace on exception enabled (using libunwind)
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Looking for pthread_create
+-- Looking for pthread_create - not found
+-- Check if compiler accepts -pthread
+-- Check if compiler accepts -pthread - yes
+-- Found Threads: TRUE  
+-- Performing Test _pthread_c
+-- Performing Test _pthread_c - Success
+-- Performing Test _pthread_cxx
+-- Performing Test _pthread_cxx - Success
+-- Found OpenSSL: /usr/local/lib/libcrypto.so (found version "1.0.2q")  
+-- Using OpenSSL include dir at /usr/local/include
+-- Found PkgConfig: /usr/local/bin/pkg-config (found version "1.5.4") 
+-- Checking for module 'libpcsclite'
+--   Package 'libpcsclite', required by 'virtual:world', not found
+-- Could NOT find PCSC (missing: PCSC_LIBRARY PCSC_INCLUDE_DIR) 
+-- Looking for memset_s in c
+-- Looking for memset_s in c - found
+-- Looking for explicit_bzero in c
+-- Looking for explicit_bzero in c - found
+-- Looking for strptime
+-- Looking for strptime - found
+-- Found MiniUPnPc: /usr/local/include/miniupnpc  
+-- Found miniupnpc API version 17
+-- Using shared miniupnpc found at /usr/local/include/miniupnpc
+-- Looking for libunbound
+-- Found libunbound include (unbound.h) in /usr/local/include
+-- Found libunbound shared library
+-- Using 64-bit LMDB from source tree
+-- Could not find PCSC
+-- Building on amd64 for native
+-- Performing Test _Wformat_c
+-- Performing Test _Wformat_c - Success
+-- Performing Test _Wformat_cxx
+-- Performing Test _Wformat_cxx - Success
+-- Performing Test _Wformat_security_c
+-- Performing Test _Wformat_security_c - Success
+-- Performing Test _Wformat_security_cxx
+-- Performing Test _Wformat_security_cxx - Success
+-- Performing Test _fstack_protector_c
+-- Performing Test _fstack_protector_c - Success
+-- Performing Test _fstack_protector_cxx
+-- Performing Test _fstack_protector_cxx - Success
+-- Performing Test _fstack_protector_strong_c
+-- Performing Test _fstack_protector_strong_c - Success
+-- Performing Test _fstack_protector_strong_cxx
+-- Performing Test _fstack_protector_strong_cxx - Success
+-- Looking for -pie linker flag
+-- Looking for -pie linker flag - found
+-- Looking for -Wl,-z,relro linker flag
+-- Looking for -Wl,-z,relro linker flag - found
+-- Looking for -Wl,-z,now linker flag
+-- Looking for -Wl,-z,now linker flag - found
+-- Looking for -Wl,-z,noexecstack linker flag
+-- Looking for -Wl,-z,noexecstack linker flag - found
+-- Looking for -Wl,-z,noexecheap linker flag
+-- Looking for -Wl,-z,noexecheap linker flag - found
+-- Using C security hardening flags:  -Wformat -Wformat-security -fstack-protector -fstack-protector-strong
+-- Using C++ security hardening flags:  -Wformat -Wformat-security -fstack-protector -fstack-protector-strong
+-- Using linker security hardening flags:  -pie -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -Wl,-z,noexecheap
+-- AES support enabled
+-- Found Boost Version: 106900
+-- Looking for rl_copy_text
+-- Looking for rl_copy_text - found
+-- Looking for rl_filename_completion_function
+-- Looking for rl_filename_completion_function - found
+-- Found readline library at: /usr/local
+-- Found Git: /usr/local/bin/git
+-- Found Doxygen: /usr/local/bin/doxygen (found version "1.8.14") found components:  doxygen dot 
+-- Performing Test HAVE_C11
+-- Performing Test HAVE_C11 - Success
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /root/masari/build/release
+Scanning dependencies of target generate_translations_header
+[  1%] Creating directories for 'generate_translations_header'
+[  2%] No download step for 'generate_translations_header'
+[  2%] No update step for 'generate_translations_header'
+[  3%] No patch step for 'generate_translations_header'
+[  4%] Performing configure step for 'generate_translations_header'
+-- The C compiler identification is Clang 6.0.1
+-- The CXX compiler identification is Clang 6.0.1
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+lrelease version 5.12.0
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /root/masari/build/release/translations
+[  4%] Performing build step for 'generate_translations_header'
+Scanning dependencies of target generate_translations_header
+[ 50%] Building C object CMakeFiles/generate_translations_header.dir/generate_translations_header.c.o
+[100%] Linking C executable generate_translations_header
+Updating 'monero.qm'...
+    Generated 0 translation(s) (0 finished and 0 unfinished)
+    Ignored 737 untranslated source text(s)
+Updating 'monero_fr.qm'...
+    Generated 737 translation(s) (737 finished and 0 unfinished)
+Updating 'monero_it.qm'...
+    Generated 380 translation(s) (376 finished and 4 unfinished)
+    Ignored 357 untranslated source text(s)
+Updating 'monero_sv.qm'...
+    Generated 737 translation(s) (737 finished and 0 unfinished)
+Generating embedded translations header
+[100%] Built target generate_translations_header
+[  4%] Performing install step for 'generate_translations_header'
+
+[  5%] Completed 'generate_translations_header'
+[  5%] Built target generate_translations_header
+Scanning dependencies of target lmdb
+[  5%] Building C object external/db_drivers/liblmdb/CMakeFiles/lmdb.dir/mdb.c.o
+[  6%] Building C object external/db_drivers/liblmdb/CMakeFiles/lmdb.dir/midl.c.o
+[  7%] Linking C static library liblmdb.a
+[  7%] Built target lmdb
+Scanning dependencies of target easylogging
+...
