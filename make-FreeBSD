@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
 #+ freebsd release 12 boost libs 1.69
- make -C /usr/ports/lang/python3 build deinstall install
+# make -C /usr/ports/lang/python3 build deinstall install
  env PYTHON3=/usr/local/bin/python3
- pkg install -f cppzmq doxygen libsodium binutils python3 p5-Google-ProtocolBuffers p5-Google-Chart p5-Google-Data-JSON
-make -C /usr/ports/devel/boost-libs build deinstall install
+# pkg install -f cppzmq doxygen libsodium binutils python3 p5-Google-ProtocolBuffers p5-Google-Chart p5-Google-Data-JSON
+#make -C /usr/ports/devel/boost-libs build deinstall install
 git add make-FreeBSD CMakeLists.txt
 #git add CMakeLists.txt src/cryptonote_basic/miner.cpp
 #git add make-FreeBSD
-git commit -m "FreeBSD 12 : SEM lmdb wallet miniupnpc patch, cmake list from Monero code, build script"
+git commit -m "FreeBSD 12 build OK testing bc synchronize : SEM lmdb wallet miniupnpc patch, cmake list from Monero code, build script"
 git pull origin master
-#git push copy
+git push copy
 
 
 git submodule init
