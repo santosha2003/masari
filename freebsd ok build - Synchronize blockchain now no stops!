@@ -1,0 +1,84 @@
+FreeBSD 12 stable (pkg upgrade pkg upgrade -F ; boost-libs 1.69 make build deinstall install; python3)
+
+
+In file included from /usr/include/c++/v1/map:442:
+/usr/include/c++/v1/__tree:1819:22: warning: the specified comparator type does not provide a const call operator
+      [-Wuser-defined-warnings]
+                     __trigger_diagnostics()), "");
+                     ^
+/usr/include/c++/v1/__tree:960:70: note: in instantiation of member function 'std::__1::__tree<std::__1::pair<std::__1::pair<double,
+      long>, crypto::hash>, cryptonote::txCompare, std::__1::allocator<std::__1::pair<std::__1::pair<double, long>, crypto::hash> >
+      >::~__tree' requested here
+    template <class, class, class> friend class _LIBCPP_TEMPLATE_VIS set;
+                                                                     ^
+/usr/include/c++/v1/__tree:970:7: note: from 'diagnose_if' attribute on '__trigger_diagnostics':
+      _LIBCPP_DIAGNOSE_WARNING(!__invokable<_Compare const&, _Tp const&, _Tp const&>::value,
+      ^                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/v1/__config:1130:20: note: expanded from macro '_LIBCPP_DIAGNOSE_WARNING'
+    __attribute__((diagnose_if(__VA_ARGS__, "warning")))
+                   ^           ~~~~~~~~~~~
+1 warning generated.
+[ 98%] Building CXX object src/blockchain_utilities/CMakeFiles/blockchain_import.dir/bootstrap_file.cpp.o
+[ 98%] Building CXX object src/blockchain_utilities/CMakeFiles/blockchain_import.dir/blocksdat_file.cpp.o
+[100%] Linking CXX executable ../../bin/masari-blockchain-import
+[100%] Built target blockchain_import
+
+
+
+root@pc1:~/masari#  
+root@pc1:~/masari/build/release/bin# ./masarid
+2019-01-10 21:59:41.611	     0x803373000	INFO 	global	src/daemon/main.cpp:281	Masari 'Classy Caiman' (v0.2.4.4-344f728)
+2019-01-10 21:59:41.611	     0x803373000	INFO 	global	src/daemon/protocol.h:53	Initializing cryptonote protocol...
+2019-01-10 21:59:41.612	     0x803373000	INFO 	global	src/daemon/protocol.h:58	Cryptonote protocol initialized OK
+2019-01-10 21:59:41.612	     0x803373000	INFO 	global	src/daemon/p2p.h:63	Initializing p2p server...
+2019-01-10 21:59:45.739	     0x803373000	INFO 	global	src/daemon/p2p.h:68	p2p server initialized OK
+2019-01-10 21:59:45.739	     0x803373000	INFO 	global	src/daemon/rpc.h:63	Initializing core RPC server...
+2019-01-10 21:59:45.739	     0x803373000	INFO 	global	contrib/epee/include/net/http_server_impl_base.h:76	Binding on 127.0.0.1:38081
+2019-01-10 21:59:45.739	     0x803373000	INFO 	global	src/daemon/rpc.h:69	core RPC server initialized OK on port: 38081
+2019-01-10 21:59:45.739	     0x803373000	INFO 	global	src/daemon/core.h:86	Initializing core...
+2019-01-10 21:59:45.740	     0x803373000	INFO 	global	src/cryptonote_core/cryptonote_core.cpp:420	Loading blockchain from folder /root/.masari/lmdb ...
+2019-01-10 21:59:45.817	     0x803373000	INFO 	global	src/cryptonote_core/cryptonote_core.cpp:518	Loading checkpoints
+2019-01-10 21:59:45.818	     0x803373000	INFO 	global	src/blockchain_db/lmdb/db_lmdb.cpp:587	[batch] DB resize needed
+2019-01-10 21:59:45.819	     0x803373000	INFO 	global	src/blockchain_db/lmdb/db_lmdb.cpp:503	LMDB Mapsize increased.  Old: 10594MiB, New: 11618MiB
+2019-01-10 21:59:45.819	     0x803373000	INFO 	global	src/blockchain_db/lmdb/db_lmdb.cpp:587	[batch] DB resize needed
+2019-01-10 21:59:45.819	     0x803373000	INFO 	global	src/blockchain_db/lmdb/db_lmdb.cpp:503	LMDB Mapsize increased.  Old: 11618MiB, New: 12642MiB
+2019-01-10 21:59:45.819	     0x803373000	INFO 	global	src/daemon/core.h:92	Core initialized OK
+2019-01-10 21:59:45.819	     0x803373000	INFO 	global	src/daemon/rpc.h:74	Starting core RPC server...
+2019-01-10 21:59:45.819	[SRV_MAIN]	INFO 	global	src/daemon/rpc.h:79	core RPC server started ok
+2019-01-10 21:59:45.821	[SRV_MAIN]	INFO 	global	src/daemon/p2p.h:78	Starting p2p net loop...
+2019-01-10 21:59:46.823	[P2P9]	INFO 	global	src/cryptonote_core/cryptonote_core.cpp:1442	
+**********************************************************************
+
+
+...
+
+
+0 OUT]  Synced 352089/352089
+2019-01-11 00:12:15.066	[P2P9]	INFO 	global	src/cryptonote_protocol/cryptonote_protocol_handler.inl:1635	
+**********************************************************************
+You are now synchronized with the network. You may now start masari-wallet-cli.
+
+Use the "help" command to see the list of available commands.
+**********************************************************************
+2019-01-11 00:20:09.090	[P2P3]	INFO 	global	src/blockchain_db/lmdb/db_lmdb.cpp:587	[batch] DB resize needed
+2019-01-11 00:20:09.128	[P2P3]	INFO 	global	src/blockchain_db/lmdb/db_lmdb.cpp:503	LMDB Mapsize increased.  Old: 12642MiB, New: 13666MiB
+2019-01-11 00:31:54.045	[P2P2]	INFO 	global	src/blockchain_db/lmdb/db_lmdb.cpp:587	[batch] DB resize needed
+2019-01-11 00:31:54.047	[P2P2]	INFO 	global	src/blockchain_db/lmdb/db_lmdb.cpp:503	LMDB Mapsize increased.  Old: 13666MiB, New: 14690MiB
+2019-01-11 00:55:43.011	[P2P0]	INFO 	global	src/blockchain_db/lmdb/db_lmdb.cpp:587	[batch] DB resize needed
+2019-01-11 00:55:43.014	[P2P0]	INFO 	global	src/blockchain_db/lmdb/db_lmdb.cpp:503	LMDB Mapsize increased.  Old: 14690MiB, New: 15714MiB
+2019-01-11 01:32:19.271	[P2P1]	INFO 	global	src/blockchain_db/lmdb/db_lmdb.cpp:587	[batch] DB resize needed
+2019-01-11 01:32:19.274	[P2P1]	INFO 	global	src/blockchain_db/lmdb/db_lmdb.cpp:503	LMDB Mapsize increased.  Old: 15714MiB, New: 16738MiB
+2019-01-11 01:57:40.098	[P2P1]	INFO 	global	src/cryptonote_core/blockchain.cpp:1940	----- BLOCK ADDED AS ALTERNATIVE -----
+id:	<09185385d1cfab6b2a09cf9b13a3b8f4cb27dfec6c0a4a71dfba02e951db7ec7>
+prev:	<14b19cbba93dfec88186365868821cc64efab8b2e4e6087249d03608eb2e1bc3>
+PoW:	<6ef98c5b9a6e57527bfa14a1fe24d46fc6d2818033593a36d082798f00000000>
+height:	352137
+version:	7
+difficulty:	3806567313
+weight:	3806567313
+cumulative difficulty:	434025298232101
+cumulative weight:	434025298232101
+block reward:	17.974674908376
+uncle:	<0000000000000000000000000000000000000000000000000000000000000000>
+status
+Height: 352467/352467 (100.0%) on mainnet, not mining, net hash 37.34 MH/s, v7, update needed, 8(out)+0(in) connections, uptime 0d 14h 53m 42s
