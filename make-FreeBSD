@@ -28,7 +28,7 @@ mkdir build/release
 cd build/release
 
 # FreeBSD 12 GNU linker (pkg ins binutils)
- cmake -D BUILD_TESTS=OFF -DCMAKE_LINKER=/usr/local/bin/ld -D CMAKE_BUILD_TYPE=release ../..
+ cmake -D BUILD_TESTS=OFF -DMANUAL_SUBMODULES=1 -DCMAKE_LINKER=/usr/local/bin/ld -D CMAKE_BUILD_TYPE=release ../..
 #-DCMAKE_LINKER=/usr/local/bin/ld  
 #cmake ../..
  make
