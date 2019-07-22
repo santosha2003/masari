@@ -1,0 +1,33 @@
+#!/bin/sh
+
+cd ~/masari
+git checkout -f
+git pull
+pwd
+make
+#make -C /usr/ports/devel/boost-libs deinstall install
+#make -C /usr/ports/devel/go-tools deinstall install
+#pkg install go boost-libs
+#env BUILD_SHARED_LIBS=1 make -DBUILD_SHARED_LIBS=1   -C /usr/ports/net-p2p/monero-cli build deinstall install
+cmake -DBUILD_SHARED_LIBS=1 .
+make
+git clone https://github.com/sammy007/monero-stratum.git
+#MONERO_DIR=/usr/ports/net-p2p/monero-cli/work/monero-0.11.1.0 cmake .
+MONERO_DIR="/root/masari"
+
+#cp ./monero-stratum/cnutil/src/stringize.hpp  /usr/local/include/boost
+#mkdir /root/masari/contrib/epee/include/boost
+#mkdir /root/masari/contrib/epee/include/boost/preprocessor
+
+#cp -R /root/monero-tool/stratum/boost /root/masari/contrib/epee/include/
+#cp ./monero-stratum/cnutil/src/stringize.hpp  /root/masari/contrib/epee/include/boost/preprocessor
+cd ~/masari
+
+cd ./monero-stratum
+
+# edit! echo "include_directories(SYSTEM \${Boost_INCLUDE_DIRS})" >> CMakeLists.txt
+cat /root/monero-tool/cm-l >>CMakeLists.txt
+env MONERO_DIR="/root/masari" cmake -DCMAKE_EXE_LINKER_FLAGS=-L/usr/local/lib -DCMAKE_SHARED_LINKER_FLAGS=-L/usr/local -DBOOST_ROOT=/usr/local/include/boost -DBOOST_LIBRARYDIR=/usr/local/lib -DBOOST_IGNORE_SYSTEM_PATHS_DEFAULT=OFF .
+make
+
+# cryptonote_core was too old (version? variant -no)

@@ -1,0 +1,25 @@
+#!/bin/sh
+
+cd ~/intensecoin
+git checkout -f
+git pull
+pwd
+make
+#make -C /usr/ports/devel/boost-libs deinstall install
+#make -C /usr/ports/devel/go-tools deinstall install
+#pkg install go boost-libs
+#env BUILD_SHARED_LIBS=1 make -DBUILD_SHARED_LIBS=1   -C /usr/ports/net-p2p/monero-cli build deinstall install
+cmake -DBUILD_SHARED_LIBS=1 .
+make
+git clone https://github.com/sammy007/monero-stratum.git
+cd ./monero-stratum
+#MONERO_DIR=/usr/ports/net-p2p/monero-cli/work/monero-0.11.1.0 cmake .
+MONERO_DIR="/root/intensecoin"
+cp ~/monero-tool/stratum/boost/preprocessor/stringize.hpp  /usr/local/include/boost
+mkdir /root/intensecoin/contrib/epee/include/boost
+mkdir /root/intensecoin/contrib/epee/include/boost/preprocessor
+cp ~/monero-tool/stratum/boost/preprocessor/stringize.hpp  /root/intensecoin/contrib/epee/include
+# edit! echo "include_directories(SYSTEM \${Boost_INCLUDE_DIRS})" >> CMakeLists.txt
+env MONERO_DIR="/root/intensecoin" cmake -DCMAKE_EXE_LINKER_FLAGS=-L/usr/local/lib -DCMAKE_SHARED_LINKER_FLAGS=-L/usr/local -DBOOST_ROOT=/usr/local/include/boost -DBOOST_LIBRARYDIR=/usr/local/lib -DBOOST_IGNORE_SYSTEM_PATHS_DEFAULT=OFF .
+make
+
