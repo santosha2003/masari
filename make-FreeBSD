@@ -15,7 +15,7 @@
 git add make-FreeBSD CMakeLists.txt
 #git add CMakeLists.txt src/cryptonote_basic/miner.cpp
 #git add make-FreeBSD
-git commit -m "FreeBSD 12 build OK testing bc synchronize : SEM lmdb wallet miniupnpc patch, cmake list from Monero code, build script"
+git commit -m "FreeBSD 12 build 3.1"
 git pull origin master
 git push copy
 
