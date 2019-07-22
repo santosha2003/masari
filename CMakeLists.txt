@@ -541,8 +541,15 @@ if(MSVC)
   include_directories(SYSTEM src/platform/msc)
 else()
   include(TestCXXAcceptsFlag)
+<<<<<<< HEAD
   if (NOT ARCH)
     set(ARCH native CACHE STRING "CPU to build for: -march value or 'default' to not pass -march at all")
+=======
+  if (NOT ARM6)
+    if(NOT DEPENDS OR DEPENDS AND NOT ARM)
+      set(ARCH native CACHE STRING "CPU to build for: -march value or 'default' to not pass -march at all")
+    endif()
+>>>>>>> 934fe110aeec04657d0b4f1eccb35bb67e6dd9d8
   endif()
   message(STATUS "Building on ${CMAKE_SYSTEM_PROCESSOR} for ${ARCH}")
   if(ARCH STREQUAL "default")
@@ -815,7 +822,11 @@ else()
   endif()
 
   if(APPLE)
+<<<<<<< HEAD
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=default -DGTEST_HAS_TR1_TUPLE=0")
+=======
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -DGTEST_HAS_TR1_TUPLE=0")
+>>>>>>> 934fe110aeec04657d0b4f1eccb35bb67e6dd9d8
   endif()
 
   set(DEBUG_FLAGS "-g3")
@@ -914,12 +925,20 @@ endif()
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 if(MINGW)
+<<<<<<< HEAD
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wa,-mbig-obj")
   set(EXTRA_LIBRARIES mswsock;ws2_32;iphlpapi;crypt32;bcrypt)
   if(DEPENDS)
     set(ICU_LIBRARIES icuio icui18n icuuc icudata icutu iconv)
   else()
     set(ICU_LIBRARIES icuio icuin icuuc icudt icutu iconv)
+=======
+  set(EXTRA_LIBRARIES mswsock;ws2_32;iphlpapi;crypt32)
+  if(DEPENDS)
+    set(ICU_LIBRARIES ${Boost_LOCALE_LIBRARY} sicuio sicuin sicuuc sicudt sicutu iconv)
+  else()
+    set(ICU_LIBRARIES ${Boost_LOCALE_LIBRARY} icuio icuin icuuc icudt icutu iconv)
+>>>>>>> 934fe110aeec04657d0b4f1eccb35bb67e6dd9d8
   endif()
 elseif(APPLE OR OPENBSD OR ANDROID)
   set(EXTRA_LIBRARIES "")

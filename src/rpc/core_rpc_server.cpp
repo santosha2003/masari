@@ -39,6 +39,7 @@ using namespace epee;
 #include "common/download.h"
 #include "common/util.h"
 #include "common/perf_timer.h"
+#include "common/dns_utils.h"
 #include "cryptonote_basic/cryptonote_format_utils.h"
 #include "cryptonote_basic/account.h"
 #include "cryptonote_basic/cryptonote_basic_impl.h"
@@ -232,14 +233,15 @@ namespace cryptonote
     return get_pruned_tx_blob(tx);
   }
   //------------------------------------------------------------------------------------------------------------------------------
-  static cryptonote::blobdata get_pruned_tx_json(cryptonote::transaction &tx)
-  {
-    std::stringstream ss;
-    json_archive<true> ar(ss);
-    bool r = tx.serialize_base(ar);
-    CHECK_AND_ASSERT_MES(r, cryptonote::blobdata(), "Failed to serialize rct signatures base");
-    return ss.str();
-  }
+  class pruned_transaction {
+    transaction& tx;
+  public:
+    pruned_transaction(transaction& tx) : tx(tx) {}
+    BEGIN_SERIALIZE_OBJECT()
+      bool r = tx.serialize_base(ar);
+      if (!r) return false;
+    END_SERIALIZE()
+  };
   //------------------------------------------------------------------------------------------------------------------------------
   bool core_rpc_server::on_get_blocks(const COMMAND_RPC_GET_BLOCKS_FAST::request& req, COMMAND_RPC_GET_BLOCKS_FAST::response& res)
   {
@@ -648,10 +650,12 @@ namespace cryptonote
 
       crypto::hash tx_hash = *vhi++;
       e.tx_hash = *txhi++;
-      blobdata blob = req.prune ? get_pruned_tx_blob(tx) : t_serializable_object_to_blob(tx);
+	  
+	  pruned_transaction pruned_tx{tx};
+      blobdata blob = req.prune ? t_serializable_object_to_blob(pruned_tx) : t_serializable_object_to_blob(tx);
       e.as_hex = string_tools::buff_to_hex_nodelimer(blob);
       if (req.decode_as_json)
-        e.as_json = req.prune ? get_pruned_tx_json(tx) : obj_to_json_str(tx);
+        e.as_json = req.prune ? obj_to_json_str(pruned_tx) : obj_to_json_str(tx);
       e.in_pool = pool_tx_hashes.find(tx_hash) != pool_tx_hashes.end();
       if (e.in_pool)
       {
@@ -703,18 +707,46 @@ namespace cryptonote
       return ok;
 
     std::vector<crypto::hash> vh;
-    
-    for (size_t i = 0; i < req.heights.size(); i++)
+
+    if (req.range)
     {
-      block blk;
-      bool orphan = false;
-      crypto::hash block_hash = m_core.get_block_id_by_height(req.heights[i]);
-      bool have_block = m_core.get_block_by_hash(block_hash, blk, &orphan);
-    
-      for(auto& btxs: blk.tx_hashes)
-        vh.push_back(btxs);
+      if (req.heights.size() != 2)
+      {
+        res.status = "Range set true but heights size != 2";
+        return true;
+      }
+
+      for (size_t i = 0; i < (req.heights[1] - req.heights[0]) + 1; i++)
+      {
+        block blk;
+		bool orphan = false;
+		crypto::hash block_hash = m_core.get_block_id_by_height(req.heights[0]+i);
+		bool have_block = m_core.get_block_by_hash(block_hash, blk, &orphan);
+
+        for(auto& btxs: blk.tx_hashes)
+          vh.push_back(btxs);
+
+        if(req.include_miner_txs)
+         vh.push_back(get_transaction_hash(blk.miner_tx));
+      }
     }
+    else
+    {
+      for (size_t i = 0; i < req.heights.size(); i++)
+      {
+        block blk;
+        bool orphan = false;
+        crypto::hash block_hash = m_core.get_block_id_by_height(req.heights[i]);
+        bool have_block = m_core.get_block_by_hash(block_hash, blk, &orphan);
     
+        for(auto& btxs: blk.tx_hashes)
+          vh.push_back(btxs);
+
+        if(req.include_miner_txs)
+          vh.push_back(get_transaction_hash(blk.miner_tx));
+      }
+    }
+
     std::list<crypto::hash> missed_txs;
     std::list<transaction> txs;
     bool r = m_core.get_transactions(vh, txs, missed_txs);
@@ -797,13 +829,16 @@ namespace cryptonote
       res.txs.push_back(COMMAND_RPC_GET_TRANSACTIONS_BY_HEIGHTS::entry());
       COMMAND_RPC_GET_TRANSACTIONS_BY_HEIGHTS::entry &e = res.txs.back();
 
+      pruned_transaction pruned_tx{tx};
       crypto::hash tx_hash = *vhi++;
       e.tx_hash = *txhi++;
-      blobdata blob = req.prune ? get_pruned_tx_blob(tx) : t_serializable_object_to_blob(tx);
+      blobdata blob = req.prune ? t_serializable_object_to_blob(pruned_tx) : t_serializable_object_to_blob(tx);
       e.as_hex = string_tools::buff_to_hex_nodelimer(blob);
       if (req.decode_as_json)
-        e.as_json = req.prune ? get_pruned_tx_json(tx) : obj_to_json_str(tx);
-      e.in_pool = pool_tx_hashes.find(tx_hash) != pool_tx_hashes.end();
+        e.as_json = req.prune ? obj_to_json_str(pruned_tx) : obj_to_json_str(tx);
+
+      bool in_pool = pool_tx_hashes.find(tx_hash) != pool_tx_hashes.end();
+      e.in_pool = in_pool;
       if (e.in_pool)
       {
         e.block_height = e.block_timestamp = std::numeric_limits<uint64_t>::max();
@@ -825,7 +860,7 @@ namespace cryptonote
       }
 
       // output indices too if not in pool
-      if (pool_tx_hashes.find(tx_hash) == pool_tx_hashes.end())
+      if (!in_pool)
       {
         bool r = m_core.get_tx_outputs_gindexs(tx_hash, e.output_indices);
         if (!r)
@@ -1180,6 +1215,9 @@ namespace cryptonote
       return r;
 
     m_core.get_pool_transactions_and_spent_keys_info(res.transactions, res.spent_key_images, !request_has_rpc_origin || !m_restricted);
+    
+    for (tx_info& txi : res.transactions)
+      txi.tx_blob = epee::string_tools::buff_to_hex_nodelimer(txi.tx_blob);
     
     if (req.json_only)
     {
@@ -1610,9 +1648,12 @@ namespace cryptonote
     bool have_block = m_core.get_block_by_hash(block_hash, blk, &orphan);
     if (!have_block)
     {
-      error_resp.code = CORE_RPC_ERROR_CODE_INTERNAL_ERROR;
-      error_resp.message = "Internal error: can't get block by hash. Hash = " + req.hash + '.';
-      return false;
+      if(!m_core.get_uncle_by_hash(block_hash, blk))
+      {
+        error_resp.code = CORE_RPC_ERROR_CODE_INTERNAL_ERROR;
+        error_resp.message = "Internal error: can't get block by hash. Hash = " + req.hash + '.';
+        return false;
+      }
     }
     if (blk.miner_tx.vin.size() != 1 || blk.miner_tx.vin.front().type() != typeid(txin_gen))
     {
@@ -1822,6 +1863,21 @@ namespace cryptonote
     res.connections = m_p2p.get_payload_object().get_connections();
 
     res.status = CORE_RPC_STATUS_OK;
+
+    return true;
+  }
+  //------------------------------------------------------------------------------------------------------------------------------
+  bool core_rpc_server::on_resolve_open_alias(const COMMAND_RPC_RESOLVE_OPEN_ALIAS::request& req, COMMAND_RPC_RESOLVE_OPEN_ALIAS::response& res)
+  {
+    PERF_TIMER(on_resolve_open_alias);
+
+    bool dnssec_valid;
+    res.addresses = tools::dns_utils::addresses_from_url(req.url, dnssec_valid);
+	
+    if(res.addresses.empty())
+      res.status = "No addresses found at url " + req.url;
+    else
+      res.status = CORE_RPC_STATUS_OK;
 
     return true;
   }

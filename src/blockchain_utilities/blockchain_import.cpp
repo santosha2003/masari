@@ -1,5 +1,5 @@
-// Copyright (c) 2017-2018, The Masari Project
-// Copyright (c) 2014-2018, The Monero Project
+// Copyright (c) 2017-2019, The Masari Project
+// Copyright (c) 2014-2019, The Monero Project
 //
 // All rights reserved.
 //
@@ -444,6 +444,13 @@ int import_from_file(cryptonote::core& core, const std::string& import_file_path
             txs.push_back(cryptonote::blobdata());
             cryptonote::tx_to_blob(tx, txs.back());
           }
+          if (b.uncle != crypto::null_hash)
+          {
+            cryptonote::blobdata uncle_block;
+            cryptonote::block_to_blob(bp.uncle, uncle_block);
+            std::list<cryptonote::blobdata> empty_list; // dummy list as uncle blocks don't contain full transactions
+            blocks.push_back({uncle_block, empty_list});
+          }
           blocks.push_back({block, txs});
           int ret = check_flush(core, blocks, false);
           if (ret)
@@ -483,6 +490,21 @@ int import_from_file(cryptonote::core& core, const std::string& import_file_path
           cumulative_difficulty = bp.cumulative_difficulty;
           cumulative_weight = bp.cumulative_weight;
           coins_generated = bp.coins_generated;
+
+          if (b.major_version > 7 && b.uncle != crypto::null_hash)
+          {
+            try
+            {
+              core.get_blockchain_storage().get_db().add_uncle(bp.uncle, bp.uncle_size, bp.uncle_difficulty, bp.uncle_weight, bp.uncle_coins_generated, b.uncle, h-2);
+            }
+            catch (const std::exception& e)
+            {
+              std::cout << refresh_string;
+              MFATAL("Error adding uncle block to blockchain: " << e.what());
+              quit = 2; // make sure we don't commit partial block data
+              break;
+            }
+          }
 
           try
           {
@@ -596,8 +618,8 @@ int main(int argc, char* argv[])
   const command_line::arg_descriptor<std::string> arg_database = {
     "database", available_dbs.c_str(), default_db_type
   };
-  const command_line::arg_descriptor<bool> arg_verify =  {"guard-against-pwnage",
-    "Verify blocks and transactions during import (only disable if you exported the file yourself)", true};
+  const command_line::arg_descriptor<bool> arg_noverify =  {"dangerous-unverified-import",
+    "Blindly trust the import file and use potentially malicious blocks and transactions during import (only enable if you exported the file yourself)", false};
   const command_line::arg_descriptor<bool> arg_batch  =  {"batch",
     "Batch transactions for faster import", true};
   const command_line::arg_descriptor<bool> arg_resume =  {"resume",
@@ -617,7 +639,7 @@ int main(int argc, char* argv[])
   // call add_options() directly for these arguments since
   // command_line helpers support only boolean switch, not boolean argument
   desc_cmd_sett.add_options()
-    (arg_verify.name, make_semantic(arg_verify), arg_verify.description)
+    (arg_noverify.name, make_semantic(arg_noverify), arg_noverify.description)
     (arg_batch.name,  make_semantic(arg_batch),  arg_batch.description)
     (arg_resume.name, make_semantic(arg_resume), arg_resume.description)
     ;
@@ -636,7 +658,7 @@ int main(int argc, char* argv[])
   if (! r)
     return 1;
 
-  opt_verify    = command_line::get_arg(vm, arg_verify);
+  opt_verify    = !command_line::get_arg(vm, arg_noverify);
   opt_batch     = command_line::get_arg(vm, arg_batch);
   opt_resume    = command_line::get_arg(vm, arg_resume);
   block_stop    = command_line::get_arg(vm, arg_block_stop);
@@ -659,6 +681,19 @@ int main(int argc, char* argv[])
     std::cerr << "Error: batch-size must be > 0" << ENDL;
     return 1;
   }
+  
+  if (!opt_verify)
+  {
+    MCLOG_RED(el::Level::Warning, "global", "\n"
+      "Import is set to proceed WITHOUT VERIFICATION.\n"
+      "This is a DANGEROUS operation: if the file was tampered with in transit, or obtained from a malicious source,\n"
+      "you could end up with a compromised database. It is recommended to NOT use " << arg_noverify.name << ".\n"
+      "*****************************************************************************************\n"
+      "You have 90 seconds to press ^C or terminate this program before unverified import starts\n"
+      "*****************************************************************************************");
+    sleep(90);
+  }
+  
   if (opt_verify && command_line::is_arg_defaulted(vm, arg_batch_size))
   {
     // usually want batch size default lower if verify on, so progress can be
@@ -682,7 +717,7 @@ int main(int argc, char* argv[])
   m_config_folder = command_line::get_arg(vm, cryptonote::arg_data_dir);
   db_arg_str = command_line::get_arg(vm, arg_database);
 
-  mlog_configure(mlog_get_default_log_path("monero-blockchain-import.log"), true);
+  mlog_configure(mlog_get_default_log_path("masari-blockchain-import.log"), true);
   if (!command_line::is_arg_defaulted(vm, arg_log_level))
     mlog_set_log(command_line::get_arg(vm, arg_log_level).c_str());
   else

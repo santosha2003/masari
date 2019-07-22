@@ -13,15 +13,16 @@ Portions Copyright (c) 2012-2013 The Cryptonote developers.
 - GitHub: [https://github.com/masari-project/masari](https://github.com/masari-project/masari)
 - IRC: [#masari on Freenode](http://webchat.freenode.net/?randomnick=1&channels=%23masari&prompt=1&uio=d4)
 
-## Vulnerability response
+## Vulnerability reports
 
-- Our [Vulnerability Response Process](https://github.com/masari-project/meta/blob/master/VULNERABILITY_RESPONSE_PROCESS.md) encourages responsible disclosure
+- Please contact thaerkh or cryptochangements34 to responsibly disclose vulnerabilities
 
 ## Coverage
 
 | Type      | Status |
 |-----------|--------|
 | License   | [![License](https://img.shields.io/badge/license-BSD3-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+| Build     | [![Build Status](https://travis-ci.com/masari-project/masari.svg?branch=master)](https://travis-ci.com/masari-project/masari) |
 
 ## Introduction
 

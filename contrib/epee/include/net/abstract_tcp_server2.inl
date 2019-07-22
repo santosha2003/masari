@@ -61,8 +61,11 @@
 #define GET_IO_SERVICE(s) ((s).get_io_service())
 #endif
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 934fe110aeec04657d0b4f1eccb35bb67e6dd9d8
 PRAGMA_WARNING_PUSH
 namespace epee
 {

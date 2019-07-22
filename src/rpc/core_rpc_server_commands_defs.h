@@ -628,11 +628,15 @@ namespace cryptonote
       std::vector<uint64_t> heights;
       bool decode_as_json;
       bool prune;
+      bool include_miner_txs;
+      bool range;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(heights)
-        KV_SERIALIZE(decode_as_json)
+        KV_SERIALIZE_OPT(decode_as_json, false)
         KV_SERIALIZE_OPT(prune, false)
+        KV_SERIALIZE_OPT(include_miner_txs, false)
+        KV_SERIALIZE_OPT(range, false)
       END_KV_SERIALIZE_MAP()
     };
 
@@ -661,10 +665,6 @@ namespace cryptonote
 
     struct response
     {
-      // older compatibility stuff
-      std::list<std::string> txs_as_hex;  //transactions blobs as hex (old compat)
-      std::list<std::string> txs_as_json; //transactions decoded as json (old compat)
-
       // in both old and new
       std::list<std::string> missed_tx;   //not found transactions
 
@@ -674,8 +674,6 @@ namespace cryptonote
       bool untrusted;
 
       BEGIN_KV_SERIALIZE_MAP()
-        KV_SERIALIZE(txs_as_hex)
-        KV_SERIALIZE(txs_as_json)
         KV_SERIALIZE(txs)
         KV_SERIALIZE(missed_tx)
         KV_SERIALIZE(status)
@@ -1779,6 +1777,30 @@ namespace cryptonote
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(status)
         KV_SERIALIZE(connections)
+      END_KV_SERIALIZE_MAP()
+    };
+
+  };
+  
+  struct COMMAND_RPC_RESOLVE_OPEN_ALIAS
+  {
+    struct request
+    {
+      std::string url;
+	  
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(url)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      std::string status;
+	  std::vector<std::string> addresses;
+      
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(status)
+        KV_SERIALIZE(addresses)
       END_KV_SERIALIZE_MAP()
     };
 
