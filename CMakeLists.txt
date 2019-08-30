@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2018, The Monero Project
+# Copyright (c) 2014-2019, The Monero Project
 #
 # All rights reserved.
 #
@@ -40,8 +40,11 @@ if (IOS)
 endif()
 
 cmake_minimum_required(VERSION 2.8.7)
+message(STATUS "CMake version ${CMAKE_VERSION}")
 
 project(monero)
+
+enable_language(C ASM)
 
 function (die msg)
   if (NOT WIN32)
@@ -112,6 +115,9 @@ string(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_LOWER)
 # to identify the target architecture, to direct logic in this cmake script.
 # Since ARCH is a cached variable, it will not be set on first cmake invocation.
 if (NOT ARCH OR ARCH STREQUAL "" OR ARCH STREQUAL "native" OR ARCH STREQUAL "default")
+  if(CMAKE_SYSTEM_PROCESSOR STREQUAL "")
+    set(CMAKE_SYSTEM_PROCESSOR ${CMAKE_HOST_SYSTEM_PROCESSOR})
+  endif()
   set(ARCH_ID "${CMAKE_SYSTEM_PROCESSOR}")
 else()
   set(ARCH_ID "${ARCH}")
@@ -321,6 +327,8 @@ if (DATABASE STREQUAL "lmdb")
   message(STATUS "Using LMDB as default DB type")
   set(BLOCKCHAIN_DB DB_LMDB)
   add_definitions("-DDEFAULT_DB_TYPE=\"lmdb\"")
+ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_WANT_SEMUN")
+
 elseif (DATABASE STREQUAL "berkeleydb")
   find_package(BerkeleyDB)
   if(NOT BERKELEY_DB)
